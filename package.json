@@ -1,0 +1,11 @@
+{
+  "name": "hexo-renderer-asciidoctor",
+  "version": "1.0.0",
+  "description": "A Hexo renderer that uses the asciidoctor external command to do the actual rendering.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bogdan Mustiata <bogdan.mustiata@gmail.com>",
+  "license": "MIT"
+}
