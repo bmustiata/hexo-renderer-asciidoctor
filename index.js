@@ -24,13 +24,28 @@ function renderer(data, locals) {
 
   // FIXME: Windows?
   var relativePath = /^(.*)\/(source\/.*?)$/.exec(filePath)[2];
-  var asciidoctorCommand = "asciidoctor -b html5 -o - -s -d book -r asciidoctor-diagram " + relativePath;
+  var asciidoctorCommand = "asciidoctor -b html5 -o - -s -d book -r asciidoctor-diagram -D public/ " + relativePath;
 
   var html = childProcess.execSync(asciidoctorCommand, {
     encoding: 'utf-8'
   });
 
   var $ = cheerio.load(html, cheerio_load_option);
+
+  console.log(html);
+
+  $('img').each(function(index, elem) {
+      var imagePath = $(elem).attr("src");
+      console.log("Image: ", imagePath);
+
+      if (/^\/documents\/public\//.test(imagePath)) {
+        imagePath = imagePath.substr(17); // strlen(/documents/public)
+        $(elem).attr("src", imagePath);
+      }
+
+      console.log("Image: ", imagePath);
+  });
+
 
   $('.highlight code').each(function(index, elem) {
     options.lang = elem.attribs['data-lang'];
