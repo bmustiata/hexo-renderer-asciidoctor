@@ -3,8 +3,11 @@
 var entities = require('entities');
 var util = require('hexo-util');
 var cheerio = require('cheerio');
-var asciidoctor = require('asciidoctor.js')();
-var processor = asciidoctor.Asciidoctor(true);
+var childProcess = require("child_process");
+
+var cheerio_load_option = {
+  decodeEntities: false
+};
 
 var options = {
   auto_detect: false,
@@ -13,17 +16,20 @@ var options = {
   wrap: false
 };
 
-var cheerio_load_option = {
-  decodeEntities: false
-};
-
-var asciidoc_options = {
-  doctype: 'book'
-};
-
+/**
+ * data has text/path/toString
+ */
 function renderer(data, locals) {
-  var asciidoc_options_opal = asciidoctor.Opal.hash(asciidoc_options);
-  var html = processor.$convert(data.text, asciidoc_options_opal);
+  var filePath = data.path;
+
+  // FIXME: Windows?
+  var relativePath = /^(.*)\/(source\/.*?)$/.exec(filePath)[2];
+  var asciidoctorCommand = "asciidoctor -b html5 -o - -s -d book -r asciidoctor-diagram " + relativePath;
+
+  var html = childProcess.execSync(asciidoctorCommand, {
+    encoding: 'utf-8'
+  });
+
   var $ = cheerio.load(html, cheerio_load_option);
 
   $('.highlight code').each(function(index, elem) {
