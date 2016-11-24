@@ -17,7 +17,7 @@ npm install --save hexo-renderer-asciidoctor
 [start=3]
 3. Write articles using the `asciidoctor` packaged in docker.
 
-== Cool UML, and Ascii Art Rendering
+== Cool UML, and ASCII Art Rendering
 
 Because asciidoctor is being ran with the actual binary, beside simple text formatting, such as bold/italic/underline, it also has access to all the native plugins available that are packaged in the docker image, including `PlantUML`.
 
