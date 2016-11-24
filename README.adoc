@@ -40,6 +40,6 @@ A <|-- B
 
 and that will be correctly be rendered as:
 
-image:demo/simple-class-uml.svg[Simple Class UML]
+image:https://raw.githubusercontent.com/bmustiata/hexo-renderer-asciidoctor/master/demo/simple-class-uml.svg[Simple Class UML]
 
 and the image link will have its `/documents/public` prefix stripped out, so if will appear correctly in the page.
