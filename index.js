@@ -24,6 +24,8 @@ function renderer(data, locals) {
 
   // FIXME: Windows?
   var relativePath = /^(.*)\/(source\/.*?)$/.exec(filePath)[2];
+
+  // FIXME: Parametrize the command?
   var asciidoctorCommand = "asciidoctor -b html5 -o - -s -d book -r asciidoctor-diagram -D public/ " + relativePath;
 
   var html = childProcess.execSync(asciidoctorCommand, {
@@ -32,21 +34,32 @@ function renderer(data, locals) {
 
   var $ = cheerio.load(html, cheerio_load_option);
 
-  console.log(html);
-
+  /*
+   * If we generate images, we will try to rewrite their absolute paths
+   * so they function in the generated website correctly.
+   *
+   * Since AsciiDoctor interprets absolute paths as real absolute paths,
+   * and doesn't allow us to configure a base `root` path, we target
+   * here the docker run.
+   *
+   * If in the asciidoctor document you will have a generated image
+   * pointing at: `/documents/public/images/img.png`, this will be
+   * rewritten to point at `/images/img.png`.
+   */
+  // FIXME: parametrize the root path
   $('img').each(function(index, elem) {
-      var imagePath = $(elem).attr("src");
-      console.log("Image: ", imagePath);
-
-      if (/^\/documents\/public\//.test(imagePath)) {
-        imagePath = imagePath.substr(17); // strlen(/documents/public)
-        $(elem).attr("src", imagePath);
-      }
-
-      console.log("Image: ", imagePath);
+    var imagePath = $(elem).attr("src");
+    if (/^\/documents\/public\//.test(imagePath)) {
+      imagePath = imagePath.substr('/documents/public'.length);
+      $(elem).attr("src", imagePath);
+    }
   });
 
-
+  /*
+   * For highlighing code, we're using the same settings as
+   * `hexo-renderer-asciidoc` and we're not doing the rendering with
+   * `asciidoctor`.
+   */
   $('.highlight code').each(function(index, elem) {
     options.lang = elem.attribs['data-lang'];
     var code = entities.decodeXML($(elem).text());
